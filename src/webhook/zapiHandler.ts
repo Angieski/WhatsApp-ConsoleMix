@@ -28,12 +28,21 @@ interface MessageBuffer {
   timer: ReturnType<typeof setTimeout>;
 }
 
-const buffers = new Map<string, MessageBuffer>();
+const buffers    = new Map<string, MessageBuffer>();
+const processing = new Set<string>(); // evita processamento duplo do mesmo número
 
 async function processBuffer(phone: string): Promise<void> {
+  // Se já está processando este número, reagenda para depois do processamento atual
+  if (processing.has(phone)) {
+    setTimeout(() => processBuffer(phone), DEBOUNCE_MS);
+    return;
+  }
+
   const buf = buffers.get(phone);
   if (!buf) return;
   buffers.delete(phone);
+
+  processing.add(phone);
 
   const combinedText = buf.parts.join("\n");
 
@@ -62,6 +71,8 @@ async function processBuffer(phone: string): Promise<void> {
     } catch (sendErr) {
       console.error("[zapiHandler] Falha ao enviar mensagem de erro:", sendErr);
     }
+  } finally {
+    processing.delete(phone);
   }
 }
 

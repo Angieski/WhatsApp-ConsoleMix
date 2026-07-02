@@ -45,14 +45,12 @@ export async function generateReply(
       tools: SALES_TOOLS,
     });
 
-    // Sem tool use pendente: tenta retornar o texto final
+    // Sem tool use pendente: retorna o texto final (ou fallback se vazio)
     const hasToolUse = response.content.some((b) => b.type === "tool_use");
     if (!hasToolUse) {
       const textBlock = response.content.find((b) => b.type === "text");
       const text = textBlock?.type === "text" ? textBlock.text.trim() : "";
-      // Se há texto, retorna. Se não há (ex: só chamou ferramenta e parou), continua o loop
-      if (text) return text;
-      if (response.stop_reason === "end_turn") continue;
+      return text || "Poderia reformular sua pergunta? Não consegui formular uma resposta adequada.";
     }
 
     // Adiciona a resposta do assistente (com blocos tool_use) ao histórico de trabalho
