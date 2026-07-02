@@ -115,8 +115,7 @@ async function selectConversation(phone) {
   document.getElementById("thread").classList.remove("hidden");
   document.getElementById("thread-phone").textContent = formatPhone(phone);
 
-  await loadMessages(phone);
-  await loadConvMeta(phone);
+  await Promise.all([loadMessages(phone), loadConvMeta(phone), loadLeadCard(phone)]);
 }
 
 async function loadConvMeta(phone) {
@@ -127,6 +126,23 @@ async function loadConvMeta(phone) {
   document.getElementById("thread-name").textContent  = conv.customerName || "";
   document.getElementById("tag-select").value         = conv.tag;
   document.getElementById("status-select").value      = conv.status;
+}
+
+async function loadLeadCard(phone) {
+  const order = await apiFetch(`/conversations/${encodeURIComponent(phone)}/order`);
+  const card  = document.getElementById("lead-card");
+
+  if (!order) {
+    card.classList.add("hidden");
+    return;
+  }
+
+  card.classList.remove("hidden");
+  document.getElementById("lead-name").textContent    = order.customerName || "—";
+  document.getElementById("lead-company").textContent = order.company      || "—";
+  document.getElementById("lead-cnpj").textContent    = order.cnpj         || "—";
+  document.getElementById("lead-product").textContent = order.product      || "—";
+  document.getElementById("lead-status").textContent  = order.status       || "—";
 }
 
 async function loadMessages(phone) {
@@ -211,7 +227,10 @@ function scheduleRefresh() {
   clearInterval(refreshTimer);
   refreshTimer = setInterval(async () => {
     await loadConversations();
-    if (activePhone) await loadMessages(activePhone);
+    if (activePhone) {
+      await loadMessages(activePhone);
+      await loadLeadCard(activePhone);
+    }
   }, 10_000);
 }
 

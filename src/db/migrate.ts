@@ -8,9 +8,19 @@ export async function runMigrate(): Promise<void> {
   if (isPostgres) {
     const { pool } = await import("./pool");
     await pool.query(SCHEMA_POSTGRES);
+    // Migrações incrementais — ADD COLUMN IF NOT EXISTS é idempotente
+    await pool.query(`
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS cnpj VARCHAR(20);
+      ALTER TABLE orders ALTER COLUMN customer_email DROP NOT NULL;
+    `);
   } else {
     const { sqlitePool } = await import("./sqlite-adapter");
     sqlitePool.exec(SCHEMA_SQLITE);
+    // SQLite não suporta ADD COLUMN IF NOT EXISTS — verifica via PRAGMA
+    const cols = sqlitePool.prepare("PRAGMA table_info(orders)").all() as { name: string }[];
+    if (!cols.some((c) => c.name === "cnpj")) {
+      sqlitePool.exec("ALTER TABLE orders ADD COLUMN cnpj TEXT");
+    }
   }
 
   console.log("[migrate] Concluída com sucesso.");

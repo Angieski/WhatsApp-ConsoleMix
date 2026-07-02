@@ -5,6 +5,7 @@ import {
   updateConversation,
   ConversationFilter,
 } from "../services/conversationService";
+import { getOrdersByPhone } from "../sales/orderService";
 
 const router = Router();
 
@@ -41,6 +42,13 @@ router.delete("/:phone/messages", async (req: Request, res: Response): Promise<v
   await pool.query("DELETE FROM messages WHERE phone = $1", [phone]);
   await pool.query("DELETE FROM conversations WHERE phone = $1", [phone]);
   res.json({ success: true });
+});
+
+// GET /api/conversations/:phone/order
+router.get("/:phone/order", async (req: Request, res: Response): Promise<void> => {
+  const phone = String(req.params.phone);
+  const orders = await getOrdersByPhone(phone);
+  res.json(orders[0] ?? null);
 });
 
 // PATCH /api/conversations/:phone

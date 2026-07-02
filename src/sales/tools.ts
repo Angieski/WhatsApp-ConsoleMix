@@ -33,28 +33,28 @@ export const SALES_TOOLS: Tool[] = [
   {
     name: "register_order",
     description:
-      "Registra o pedido do cliente no sistema. Use esta ferramenta somente quando tiver coletado TODOS os dados obrigatórios: nome completo, e-mail, plano escolhido. Empresa/segmento é opcional.",
+      "Registra o interesse do cliente no sistema. Use somente quando tiver coletado TODOS os dados obrigatórios: nome completo, CNPJ, nome da empresa e plano escolhido.",
     input_schema: {
       type: "object" as const,
       properties: {
         customer_name: {
           type: "string",
-          description: "Nome completo do cliente",
+          description: "Nome completo do responsável",
         },
-        customer_email: {
+        cnpj: {
           type: "string",
-          description: "E-mail do cliente para envio da confirmação",
+          description: "CNPJ da empresa (apenas números ou formatado)",
         },
         company: {
           type: "string",
-          description: "Nome da empresa ou segmento de atuação (opcional)",
+          description: "Nome da empresa ou emissora",
         },
         product: {
           type: "string",
-          description: "Plano escolhido: Starter, Business ou Enterprise",
+          description: "Plano escolhido: Essencial, Profissional ou Broadcast",
         },
       },
-      required: ["customer_name", "customer_email", "product"],
+      required: ["customer_name", "cnpj", "company", "product"],
     },
   },
   {
@@ -71,8 +71,8 @@ export const SALES_TOOLS: Tool[] = [
 
 interface RegisterOrderInput {
   customer_name: string;
-  customer_email: string;
-  company?: string;
+  cnpj: string;
+  company: string;
   product: string;
 }
 
@@ -98,7 +98,7 @@ export async function executeTool(
       const order = await createOrder({
         phone,
         customerName: args.customer_name,
-        customerEmail: args.customer_email,
+        cnpj: args.cnpj,
         company: args.company,
         product: args.product,
       });

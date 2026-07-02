@@ -4,7 +4,7 @@ import { updateConversation } from "../services/conversationService";
 export interface OrderInput {
   phone: string;
   customerName: string;
-  customerEmail: string;
+  cnpj?: string;
   company?: string;
   product: string;
 }
@@ -21,15 +21,14 @@ export async function createOrder(input: OrderInput): Promise<Order> {
     status: string;
     created_at: Date;
   }>(
-    `INSERT INTO orders (phone, customer_name, customer_email, company, product)
+    `INSERT INTO orders (phone, customer_name, cnpj, company, product)
      VALUES ($1, $2, $3, $4, $5)
      RETURNING id, status, created_at`,
-    [input.phone, input.customerName, input.customerEmail, input.company ?? null, input.product]
+    [input.phone, input.customerName, input.cnpj ?? null, input.company ?? null, input.product]
   );
 
   const row = rows[0];
 
-  // Auto-classifica a conversa como venda concluída no dashboard
   await updateConversation(input.phone, {
     tag: "venda",
     status: "concluido",
@@ -44,13 +43,14 @@ export async function getOrdersByPhone(phone: string): Promise<Order[]> {
     id: number;
     phone: string;
     customer_name: string;
-    customer_email: string;
+    cnpj: string | null;
     company: string | null;
     product: string;
     status: string;
     created_at: Date;
   }>(
-    `SELECT * FROM orders WHERE phone = $1 ORDER BY created_at DESC`,
+    `SELECT id, phone, customer_name, cnpj, company, product, status, created_at
+     FROM orders WHERE phone = $1 ORDER BY created_at DESC`,
     [phone]
   );
 
@@ -58,7 +58,7 @@ export async function getOrdersByPhone(phone: string): Promise<Order[]> {
     id: r.id,
     phone: r.phone,
     customerName: r.customer_name,
-    customerEmail: r.customer_email,
+    cnpj: r.cnpj ?? undefined,
     company: r.company ?? undefined,
     product: r.product,
     status: r.status,
