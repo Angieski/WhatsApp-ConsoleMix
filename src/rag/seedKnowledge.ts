@@ -257,6 +257,108 @@ Política de Suporte:
 - Suporte remoto disponível para resolução de problemas complexos
 `.trim(),
   },
+  {
+    source: "faq_consolemix.txt",
+    content: `
+Perguntas e Respostas Frequentes — Console Mix
+
+P: O que é o Console Mix?
+R: É uma mesa de som virtual profissional para gerenciamento e mixagem de áudio digital. Desenvolvido para oferecer controle completo sobre múltiplos canais de áudio, com funcionalidades avançadas como equalização, expansão dinâmica, barramentos/buses dedicados e integração com Playouts externos.
+
+P: Quais os requisitos de sistema para instalação?
+R: Requisitos Mínimos: Windows 10/11 (64 bits); Intel Core i5 (6ª geração) ou AMD Ryzen 5 ou superior; 8 GB RAM; 500 MB livres em disco; placa de som compatível com DirectSound ou ASIO; resolução 1366x768 ou superior. Requisitos Recomendados: Intel Core i7 (12ª geração) ou AMD Ryzen 7 ou superior; 16 GB RAM; 1 GB livre em disco; placa de som ASIO; resolução 1920x1080 ou superior (recomenda-se touch-screen); acesso à internet.
+
+P: Como fazer a instalação do Console Mix?
+R: Faça o download no site oficial. Execute o instalador como administrador. Aceite os termos de licença. Escolha o diretório de instalação. Clique em "Instalar" e aguarde. Na primeira execução, configure sua placa de som ou interface de áudio.
+
+P: Como é a interface principal do Console Mix?
+R: A interface é dividida em seções. No topo há três painéis (A, B, C) com medidores de nível e um display digital central com hora, data e temperatura. No menu lateral direito ficam as opções: Sound, Outputs, Tracks, Plugins, CamCorder, Commands, General, Reboot/Update e About. Abaixo há o controle de Voice Over, predefinições (MEM 1-6) e a área de canais.
+
+P: Quantos canais suporta o Console Mix?
+R: O Console Mix suporta até 16 canais de entrada simultâneos (mono ou estéreo), com seleção de número de entradas conforme a interface de áudio disponibiliza. Cada canal possui fader vertical, medidores LED, botão DINAMICS para plugins, botões ON/OFF, identificação numérica e botões TALK e CUE.
+
+P: Quais as configurações de Sound (Interface de Áudio)?
+R: Audio device type: define o protocolo (Windows Audio, Windows Audio Exclusive mode, Windows Audio Low Latency mode, DirectSound, ASIO). Device: especifica o hardware de áudio. O botão "Test" verifica a comunicação com o dispositivo. Active output channels e Active input channels: selecionam canais de saída e entrada utilizados. Sample rate: define a taxa de amostragem. Audio buffer size: buffer de 64 samples = 1,3ms de latência (mais exigente para o CPU); buffers maiores reduzem carga mas aumentam delay. Control Panel: abre painel de controle do driver. Reset Device: reinicia a comunicação com o dispositivo.
+
+P: Quais as configurações de Outputs (saídas de áudio)?
+R: BUS A, BUS B, BUS C: barramentos principais de mixagem. Monitor: saída de monitoração em estúdio. Fone: saída para fones. CUE: saída de pré-escuta. MINUS 1 e MINUS 2: saídas com sinais excluídos (retornos de participantes externos). NDI/UDP: transmissão de áudio em rede. AES67: áudio sobre IP. Stream: transmissão para plataformas de streaming. Monitor Attenuation: reduz automaticamente o volume da monitoração (ducking/dimming).
+
+P: Quais as configurações de Tracks (entradas de áudio)?
+R: Input: atribui entradas às Tracks com rótulo personalizado, ganho ajustável e tipo de entrada (Main, NDI, UDP, Stream, Link INT, VOIP, Audio Call). Buses: seleciona barramentos para cada track (BUS A, BUS B, BUS C, MINUS 1, MINUS 2). Options: configurações adicionais como Cut Monitor, Voice Over, Soundtrack, Timer, personalização de cor e botão "Safe" (impede alteração da track ao usar predefinições).
+
+P: Como configurar o input dos canais?
+R: No canto superior direito, vá em Options > Tracks > Input. Selecione para cada track uma das opções: Main, NDI, UDP, Stream, Link INT, VOIP ou Audio Call.
+
+P: Como regular o ganho do canal?
+R: Em Options > Tracks > Input há um slider horizontal para regulagem de ganho de cada track.
+
+P: Como configurar o nome do canal/track?
+R: Em Options > Tracks > Input há campos para alterar nome, tipo de entrada e canais de entrada. Em Options > Tracks > Options também é possível alterar a cor de cada canal.
+
+P: O que é Audio Call?
+R: Audio Call é uma ferramenta do Console Mix que permite conectar a mesa de som a dispositivos móveis e computadores sem necessidade de IP fixo ou aplicativo dedicado, funcionando de forma totalmente wireless com apenas acesso à internet em ambos os dispositivos. Funciona como uma chamada Full Duplex (ambos comunicam simultaneamente). O dispositivo conectado recebe retorno completo da mesa, configurável pelos barramentos. Para usar: atribua "Audio Call" a uma track, clique no quadrado laranja acima do fader da track, gere e copie o link da chamada e envie ao destinatário.
+
+P: Como colocar uma chamada no ar?
+R: É possível fazer ligação por VOIP usando o Minus, ou através do Audio Call. Para Audio Call: atribua "Audio Call" a uma track, clique no quadrado laranja acima do fader, gere e copie o link e envie ao destinatário. Ambos os dispositivos precisam estar conectados à internet.
+
+P: Até quantas ligações simultâneas é possível realizar?
+R: Se for pela híbrida, até quantas ela permitir. Com o sistema Audio Call do próprio Console Mix, é possível fazer quantas ligações simultâneas houver canais disponíveis.
+
+P: Quais plugins VST3 são aceitos e recomendados?
+R: O Console Mix é compatível com plugins VST3. Use o botão "Scan Plugins" em Options > Plugins para escanear os plugins instalados no sistema. Plugins podem ser encontrados na internet, pagos ou gratuitos. Plugins recomendados: OSS (dinâmica/Over-Shoulder Suppression), TDR Kotelnikov (compressor de mastering), NA Analog Rack Delay (delay analógico), TDR Nova (equalizador paramétrico dinâmico), ATKExpander (expansor de dinâmica, reduz ruído de fundo), TAL Reverb 4 (reverberação, simula espaços acústicos).
+
+P: O que são e como funcionam os barramentos?
+R: O Console Mix possui BUS A, BUS B, BUS C e MINUS (1 e 2). Barramento A: mixagem principal (Main Mix), saída para transmissão ou gravação. Barramento B: mix alternativo ou sub mixagem, monitoramento ou gravação secundária. Barramento C: mix auxiliar ou envios de efeitos externos. Barramento Minus: cancelamento de feedback/eco, evita que o ouvinte (em entrevista) ouça o retorno de sua própria voz.
+
+P: É possível fazer predefinições?
+R: Sim. Predefinições de Tracks: salva posições de faders, configurações de plugins e personalização dos botões. Para salvar: pressione e segure 4 segundos no botão MEM desejado (MEM 1 a 6). Para carregar: clique no MEM desejado. Para personalizar: Options > General > Memories. Predefinições de Mute: salva estado dos botões ON/OFF, com até 2 grupos de Mute. Configuração: Options > Tracks > Buses/Mutes.
+
+P: O que é a função CUE?
+R: A função CUE permite monitorar o áudio processado sem enviá-lo para qualquer barramento (pré-escuta). Configuração: Options > Outputs > configurar canal de saída para CUE. Se a função for usada apenas pelo operador, não é necessário configurar canais específicos.
+
+P: O que é a função TALK?
+R: A função TALK permite comunicação direta com destinatários específicos sem interferir na transmissão principal. Possui canal dedicado, roteamento flexível para retornos específicos e Modo Dim (reduz outros sinais durante a comunicação). Uso: pressione e segure o botão TALK, fale no microfone designado. O sinal principal permanece inalterado.
+
+P: Como ligar e configurar o Voice Over?
+R: Em Options > Tracks > Options, habilite "Voice Over" no canal desejado. Para configurar a atenuação, há um slider horizontal abaixo de "Options" no canto superior direito.
+
+P: Como minimizar a mesa?
+R: Ao lado direito acima do controle de faders há a opção "Hide Mixer". Para maximizar, clique em "Show Mixer".
+
+P: Quais as opções de personalização?
+R: Em Options > General é possível personalizar toda a interface entre Standard e Black, e personalizar os rótulos das predefinições (MEM 1-6) e dos canais.
+
+P: Quais integrações o Console Mix possui?
+R: O Console Mix integra com vMix (controle de cenas, sincronização de áudio/vídeo via vMix Controller), VLC, BreakawayOne, Stereo Tool e outros sistemas.
+
+P: É possível fazer troca de cena pelo Console Mix?
+R: Sim, funciona exclusivamente com vMix, permitindo trocas de cena e com funcionalidade de tela de preview.
+
+P: Qual a integração com vMix?
+R: Sincronização automática de áudio e vídeo. Controle remoto das cenas do vMix diretamente pela interface via "vMix Controller". Mudança automática de configurações de áudio ao alternar fontes de vídeo.
+
+P: O que é AES67?
+R: AES67 é um padrão de interoperabilidade de áudio sobre IP (AoIP) que permite que diferentes sistemas de áudio em rede se comuniquem, mesmo usando protocolos diferentes. Usa PTPv2 para sincronização de relógio entre dispositivos e multicast para enviar streams para múltiplos dispositivos simultaneamente.
+
+P: Como configurar a placa de som física?
+R: Acesse Options > Sound. Selecione o tipo de protocolo (recomendado: ASIO). Escolha o dispositivo de áudio. Configure os canais de entrada e saída. Configure clock: Internal (a placa gera seu próprio clock) ou External (sincroniza com fonte externa). Vantagens: pré-amplificadores dedicados, conversores AD/DA de alta qualidade, controles físicos para ajustes rápidos.
+
+P: Qual interface de áudio USB mais acessível para rádio?
+R: Para uma rádio, o mínimo recomendado são 8 canais de saída: 1-2 no fone do operador, 3-4 no distribuidor de fones, 5-6 nas caixas e 7-8 para o transmissor ou MINUS (se tiver processador digital). O Console Mix funciona com qualquer placa de som compatível com DirectSound ou ASIO.
+
+P: É possível enviar retorno do Console para híbrida?
+R: Sim, basta ter um canal de saída disponível para isso. Outra possibilidade é usar meios digitais como VOIP ou Audio Call.
+
+P: Como regular o pan do canal?
+R: O ajuste de pan não é necessário em uma mesa de rádio, pois o valor é booleano (mono ou estéreo). Se estiver em estéreo com ganhos desiguais, podem ocorrer erros de conexão.
+
+P: Como usar Commands (Comandos UDP / Flag Settings)?
+R: Em Options > Commands é possível configurar triggers para cada track. Por exemplo: acender a luz "ON AIR" ao ligar o canal do microfone.
+
+P: Como entrar em contato com o suporte?
+R: Telefone: (42) 99985-3754 ou (42) 99848-8284. Horário: segunda a sexta das 9h às 18h (UTC-3). Site para atualizações e download: consolemix.com.br/console.
+`.trim(),
+  },
 ];
 
 function chunkText(text: string): string[] {
@@ -271,57 +373,59 @@ function chunkText(text: string): string[] {
   return chunks;
 }
 
+async function ingestDoc(doc: { source: string; content: string }): Promise<void> {
+  const chunks = chunkText(doc.content);
+  console.log(`[seed] ${doc.source}: ingerindo ${chunks.length} chunks...`);
+
+  for (let i = 0; i < chunks.length; i += EMBED_BATCH) {
+    const batch      = chunks.slice(i, i + EMBED_BATCH);
+    const embeddings = await embedTexts(batch);
+
+    for (let j = 0; j < batch.length; j++) {
+      if (isPostgres) {
+        await pool.query(
+          `INSERT INTO knowledge_chunks (content, source, embedding)
+           VALUES ($1, $2, $3::vector)`,
+          [batch[j], doc.source, toVectorSql(embeddings[j])]
+        );
+      } else {
+        await pool.query(
+          `INSERT INTO knowledge_chunks (content, source, embedding)
+           VALUES ($1, $2, $3)`,
+          [batch[j], doc.source, JSON.stringify(embeddings[j])]
+        );
+      }
+    }
+  }
+
+  console.log(`[seed] ${doc.source}: concluído.`);
+}
+
 export async function seedKnowledgeIfEmpty(): Promise<void> {
   if (!process.env.VOYAGE_API_KEY) {
     console.log("[seed] VOYAGE_API_KEY não definida — pulando ingestão.");
     return;
   }
 
+  // Remove chunks de fontes não mais presentes na lista
   const sources = KNOWLEDGE_DOCS.map((d) => d.source);
-  const { rows } = await pool.query<{ count: string }>(
-    `SELECT COUNT(*) as count FROM knowledge_chunks WHERE source = ANY($1::text[])`,
-    [sources]
-  );
-  const count = parseInt(rows[0]?.count ?? "0", 10);
-
-  if (count > 0) {
-    console.log(`[seed] Base de conhecimento já possui ${count} chunks — pulando.`);
-    return;
-  }
-
-  // Remove chunks de fontes desconhecidas (ex: exemplo.txt legado)
   await pool.query(
     `DELETE FROM knowledge_chunks WHERE source IS NULL OR source != ALL($1::text[])`,
     [sources]
   );
 
-  console.log("[seed] Base de conhecimento vazia — iniciando ingestão automática...");
-
+  // Ingere apenas documentos que ainda não têm chunks
   for (const doc of KNOWLEDGE_DOCS) {
-    const chunks = chunkText(doc.content);
-    console.log(`[seed] ${doc.source}: ${chunks.length} chunks`);
+    const { rows } = await pool.query<{ count: string }>(
+      `SELECT COUNT(*) AS count FROM knowledge_chunks WHERE source = $1`,
+      [doc.source]
+    );
+    const count = parseInt(rows[0]?.count ?? "0", 10);
 
-    for (let i = 0; i < chunks.length; i += EMBED_BATCH) {
-      const batch      = chunks.slice(i, i + EMBED_BATCH);
-      const embeddings = await embedTexts(batch);
-
-      for (let j = 0; j < batch.length; j++) {
-        if (isPostgres) {
-          await pool.query(
-            `INSERT INTO knowledge_chunks (content, source, embedding)
-             VALUES ($1, $2, $3::vector)`,
-            [batch[j], doc.source, toVectorSql(embeddings[j])]
-          );
-        } else {
-          await pool.query(
-            `INSERT INTO knowledge_chunks (content, source, embedding)
-             VALUES ($1, $2, $3)`,
-            [batch[j], doc.source, JSON.stringify(embeddings[j])]
-          );
-        }
-      }
+    if (count > 0) {
+      console.log(`[seed] ${doc.source}: já possui ${count} chunks — pulando.`);
+    } else {
+      await ingestDoc(doc);
     }
   }
-
-  console.log("[seed] Ingestão automática concluída.");
 }
