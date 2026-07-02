@@ -16,9 +16,9 @@ export async function runMigrate(): Promise<void> {
   } else {
     const { sqlitePool } = await import("./sqlite-adapter");
     sqlitePool.exec(SCHEMA_SQLITE);
-    // SQLite não suporta ADD COLUMN IF NOT EXISTS — verifica via PRAGMA
-    const cols = sqlitePool.prepare("PRAGMA table_info(orders)").all() as { name: string }[];
-    if (!cols.some((c) => c.name === "cnpj")) {
+    // SQLite não suporta ADD COLUMN IF NOT EXISTS — verifica via PRAGMA usando query()
+    const { rows } = await sqlitePool.query<{ name: string }>("PRAGMA table_info(orders)");
+    if (!rows.some((c) => c.name === "cnpj")) {
       sqlitePool.exec("ALTER TABLE orders ADD COLUMN cnpj TEXT");
     }
   }
