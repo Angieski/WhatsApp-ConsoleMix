@@ -5,6 +5,7 @@ import { handleIncoming } from "./webhook/zapiHandler";
 import conversationsRouter from "./api/conversationsRouter";
 import botRouter from "./api/botRouter";
 import { runMigrate } from "./db/migrate";
+import { seedKnowledgeIfEmpty } from "./rag/seedKnowledge";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -30,6 +31,7 @@ app.get("/health", (_req, res) => {
 });
 
 runMigrate()
+  .then(() => seedKnowledgeIfEmpty())
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Servidor rodando na porta ${PORT}`);
