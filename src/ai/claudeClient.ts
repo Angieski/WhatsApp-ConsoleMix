@@ -45,12 +45,15 @@ export async function generateReply(
       tools: SALES_TOOLS,
     });
 
-    // Sem tool use pendente: retorna o texto final (ou fallback se vazio)
+    // Sem tool use pendente: retorna o texto final
     const hasToolUse = response.content.some((b) => b.type === "tool_use");
     if (!hasToolUse) {
       const textBlock = response.content.find((b) => b.type === "text");
       const text = textBlock?.type === "text" ? textBlock.text.trim() : "";
-      return text || "Poderia reformular sua pergunta? Não consegui formular uma resposta adequada.";
+      if (text) return text;
+      // Resposta vazia sem ferramentas (edge case raro): retenta sem modificar o histórico
+      console.warn(`[claudeClient] Resposta sem texto nem ferramentas no round ${round} — retentando`);
+      continue;
     }
 
     // Adiciona a resposta do assistente (com blocos tool_use) ao histórico de trabalho
