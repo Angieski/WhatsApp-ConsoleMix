@@ -277,8 +277,10 @@ export async function seedKnowledgeIfEmpty(): Promise<void> {
     return;
   }
 
+  const sources = KNOWLEDGE_DOCS.map((d) => d.source);
   const { rows } = await pool.query<{ count: string }>(
-    "SELECT COUNT(*) as count FROM knowledge_chunks"
+    `SELECT COUNT(*) as count FROM knowledge_chunks WHERE source = ANY($1::text[])`,
+    [sources]
   );
   const count = parseInt(rows[0]?.count ?? "0", 10);
 
@@ -286,6 +288,12 @@ export async function seedKnowledgeIfEmpty(): Promise<void> {
     console.log(`[seed] Base de conhecimento já possui ${count} chunks — pulando.`);
     return;
   }
+
+  // Remove chunks de fontes desconhecidas (ex: exemplo.txt legado)
+  await pool.query(
+    `DELETE FROM knowledge_chunks WHERE source IS NULL OR source != ALL($1::text[])`,
+    [sources]
+  );
 
   console.log("[seed] Base de conhecimento vazia — iniciando ingestão automática...");
 
