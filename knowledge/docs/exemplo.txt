@@ -1,0 +1,57 @@
+ConsoleMix — Manual do Produto
+
+## O que é a ConsoleMix?
+A ConsoleMix é uma plataforma de gestão de atendimento e comunicação para empresas. Com ela, você centraliza conversas do WhatsApp, e-mail e chat em um único painel.
+
+## Planos disponíveis
+
+### Plano Starter
+- Até 2 atendentes simultâneos
+- 500 conversas por mês
+- Relatórios básicos
+- Preço: R$ 99/mês
+
+### Plano Business
+- Até 10 atendentes simultâneos
+- Conversas ilimitadas
+- Relatórios avançados e exportação
+- Integrações com CRM (HubSpot, RD Station)
+- Preço: R$ 299/mês
+
+### Plano Enterprise
+- Atendentes ilimitados
+- SLA garantido 99,9%
+- Suporte dedicado 24/7
+- Personalização de fluxos
+- Preço: sob consulta
+
+## Como configurar minha conta
+1. Acesse app.consolemix.com.br e crie sua conta
+2. Conecte seu número de WhatsApp via QR Code
+3. Adicione os membros da sua equipe em Configurações > Equipe
+4. Configure os horários de atendimento em Configurações > Horários
+
+## Requisitos técnicos
+- WhatsApp versão 2.23 ou superior instalado no celular
+- Navegador Chrome, Firefox ou Edge na versão mais recente
+- Conexão estável de internet (mínimo 5 Mbps)
+
+## Erros comuns e soluções
+
+### QR Code não aparece
+Certifique-se de que o WhatsApp está atualizado. Limpe o cache do navegador e tente novamente. Se o problema persistir, aguarde 5 minutos e recarregue a página.
+
+### Mensagens com atraso
+Verifique sua conexão com a internet. Em horários de pico (9h–11h e 14h–17h), o sistema pode apresentar latência de até 10 segundos. Isso é normal.
+
+### Atendente não recebe notificações
+Verifique se as notificações do navegador estão habilitadas para app.consolemix.com.br. No Chrome: Configurações > Privacidade > Notificações.
+
+## Política de cancelamento
+O cancelamento pode ser solicitado a qualquer momento com 30 dias de antecedência. Não realizamos reembolsos proporcionais para cancelamentos no meio do ciclo de faturamento.
+
+## Contato e suporte
+- E-mail: suporte@consolemix.com.br
+- WhatsApp: Este canal de atendimento automatizado
+- Telefone: (11) 3000-0000 (segunda a sexta, 8h–18h)
+- Status do sistema: status.consolemix.com.br

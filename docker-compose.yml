@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: consolemix-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: consolemix_dev
+      POSTGRES_USER: consolemix
+      POSTGRES_PASSWORD: consolemix_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConsoleMix — Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="navbar-brand">
+      <span class="brand-dot"></span>
+      ConsoleMix
+    </div>
+    <div class="navbar-right">
+      <div id="bot-status" class="bot-status bot-on">
+        <span class="status-dot"></span>
+        <span id="bot-status-label">BOT ATIVO</span>
+      </div>
+      <button id="btn-toggle" class="btn btn-toggle btn-danger-outline">Desligar</button>
+      <button id="btn-settings" class="btn btn-secondary">⚙ Configurações</button>
+    </div>
+  </header>
+
+  <!-- Layout principal -->
+  <div class="layout">
+
+    <!-- Sidebar: lista de conversas -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">Conversas</h2>
+        <div class="filters">
+          <button class="filter active" data-tag="" data-status="">Todas</button>
+          <button class="filter" data-tag="suporte" data-status="">Suporte</button>
+          <button class="filter" data-tag="venda" data-status="">Venda</button>
+          <button class="filter" data-tag="" data-status="pendente">Pendente</button>
+        </div>
+      </div>
+      <ul id="conversation-list" class="conversation-list">
+        <li class="list-placeholder">Carregando...</li>
+      </ul>
+    </aside>
+
+    <!-- Área principal: thread -->
+    <main class="main">
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon">💬</div>
+        <p>Selecione uma conversa para ver o histórico</p>
+      </div>
+
+      <div id="thread" class="thread hidden">
+        <div class="thread-header">
+          <div class="thread-info">
+            <span id="thread-phone" class="thread-phone"></span>
+            <span id="thread-name" class="thread-name"></span>
+          </div>
+          <div class="thread-controls">
+            <select id="tag-select" class="select-tag">
+              <option value="suporte">🔵 Suporte</option>
+              <option value="venda">🟢 Venda</option>
+            </select>
+            <select id="status-select" class="select-status">
+              <option value="pendente">🟠 Pendente</option>
+              <option value="concluido">✅ Concluído</option>
+            </select>
+          </div>
+        </div>
+        <div id="messages" class="messages"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal de configurações -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Configurações do Bot</h3>
+        <button id="btn-close-modal" class="btn-icon">✕</button>
+      </div>
+      <form id="settings-form" class="modal-body">
+        <label class="form-label">Número de Telefone (exibição)</label>
+        <input id="s-phone" type="text" class="form-input" placeholder="+55 11 99999-9999" />
+
+        <label class="form-label">Z-API Instance ID</label>
+        <input id="s-instance-id" type="text" class="form-input" placeholder="Deixe em branco para manter o atual" />
+
+        <label class="form-label">Z-API Token</label>
+        <input id="s-token" type="password" class="form-input" placeholder="Deixe em branco para manter o atual" />
+
+        <label class="form-label">Z-API Client Token</label>
+        <input id="s-client-token" type="password" class="form-input" placeholder="Deixe em branco para manter o atual" />
+
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-settings" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
