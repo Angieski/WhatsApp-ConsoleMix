@@ -1,22 +1,16 @@
 import "dotenv/config";
-import fs from "fs";
-import path from "path";
 import { isPostgres } from "./pool";
+import { SCHEMA_POSTGRES, SCHEMA_SQLITE } from "./schemas";
 
 export async function runMigrate(): Promise<void> {
-  const schemaFile = isPostgres ? "schema.sql" : "schema-sqlite.sql";
-  const schemaPath = path.join(__dirname, schemaFile);
-  const sql = fs.readFileSync(schemaPath, "utf-8");
-
   console.log(`[migrate] Modo: ${isPostgres ? "PostgreSQL" : "SQLite"}`);
-  console.log(`[migrate] Executando ${schemaFile}...`);
 
   if (isPostgres) {
     const { pool } = await import("./pool");
-    await pool.query(sql);
+    await pool.query(SCHEMA_POSTGRES);
   } else {
     const { sqlitePool } = await import("./sqlite-adapter");
-    sqlitePool.exec(sql);
+    sqlitePool.exec(SCHEMA_SQLITE);
   }
 
   console.log("[migrate] Concluída com sucesso.");
