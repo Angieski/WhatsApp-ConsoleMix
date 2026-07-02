@@ -15,6 +15,22 @@ export const SALES_TOOLS: Tool[] = [
     },
   },
   {
+    name: "set_tag",
+    description:
+      "Define a categoria da conversa no painel. Use 'suporte' assim que identificar que o cliente tem uma dúvida técnica ou problema. Use 'venda' assim que identificar que o cliente quer comprar, conhecer planos ou preços. Chame esta ferramenta assim que a intenção ficar clara — inclusive quando mudar de suporte para venda ou vice-versa.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        tag: {
+          type: "string",
+          enum: ["suporte", "venda"],
+          description: "Categoria da conversa",
+        },
+      },
+      required: ["tag"],
+    },
+  },
+  {
     name: "register_order",
     description:
       "Registra o pedido do cliente no sistema. Use esta ferramenta somente quando tiver coletado TODOS os dados obrigatórios: nome completo, e-mail, plano escolhido. Empresa/segmento é opcional.",
@@ -69,6 +85,12 @@ export async function executeTool(
     case "mark_resolved": {
       await updateConversation(phone, { status: "concluido" });
       return JSON.stringify({ success: true, message: "Conversa marcada como concluída." });
+    }
+
+    case "set_tag": {
+      const tag = input.tag as "suporte" | "venda";
+      await updateConversation(phone, { tag });
+      return JSON.stringify({ success: true, message: `Tag definida como '${tag}'.` });
     }
 
     case "register_order": {
