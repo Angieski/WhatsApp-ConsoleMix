@@ -17,14 +17,54 @@ interface ZapiWebhookPayload {
   text?: { message: string };
 }
 
+// Aguarda este tempo após a última mensagem antes de processar
+const DEBOUNCE_MS = 4000;
+
 const processedIds = new Set<string>();
+
+interface MessageBuffer {
+  parts: string[];
+  senderName?: string;
+  timer: ReturnType<typeof setTimeout>;
+}
+
+const buffers = new Map<string, MessageBuffer>();
+
+async function processBuffer(phone: string): Promise<void> {
+  const buf = buffers.get(phone);
+  if (!buf) return;
+  buffers.delete(phone);
+
+  const combinedText = buf.parts.join("\n");
+
+  try {
+    await appendToHistory(phone, "user", combinedText);
+
+    const [history, ragContext] = await Promise.all([
+      getHistory(phone),
+      retrieveContext(combinedText),
+    ]);
+
+    const reply = await generateReply(history, ragContext, phone);
+    await appendToHistory(phone, "assistant", reply);
+
+    await sendText(phone, reply);
+  } catch (err) {
+    console.error(`[zapiHandler] Erro ao processar mensagem de ${phone}:`, err);
+
+    try {
+      await sendText(phone, "Desculpe, ocorreu um erro interno. Tente novamente em instantes.");
+    } catch (sendErr) {
+      console.error("[zapiHandler] Falha ao enviar mensagem de erro:", sendErr);
+    }
+  }
+}
 
 export async function handleIncoming(req: Request, res: Response): Promise<void> {
   const payload = req.body as ZapiWebhookPayload;
 
   res.sendStatus(200);
 
-  // Verifica se o bot está habilitado
   const settings = await getSettings();
   if (!settings.enabled) return;
 
@@ -47,28 +87,19 @@ export async function handleIncoming(req: Request, res: Response): Promise<void>
   const phone = payload.phone;
   const incomingText = payload.text.message.trim();
 
-  // Registra/atualiza a conversa no dashboard
+  // Registra/atualiza a conversa no dashboard imediatamente
   await upsertConversation(phone, payload.senderName);
 
-  try {
-    await appendToHistory(phone, "user", incomingText);
-
-    const [history, ragContext] = await Promise.all([
-      getHistory(phone),
-      retrieveContext(incomingText),
-    ]);
-
-    const reply = await generateReply(history, ragContext, phone);
-    await appendToHistory(phone, "assistant", reply);
-
-    await sendText(phone, reply);
-  } catch (err) {
-    console.error(`[zapiHandler] Erro ao processar mensagem de ${phone}:`, err);
-
-    try {
-      await sendText(phone, "Desculpe, ocorreu um erro interno. Tente novamente em instantes.");
-    } catch (sendErr) {
-      console.error("[zapiHandler] Falha ao enviar mensagem de erro:", sendErr);
-    }
+  const existing = buffers.get(phone);
+  if (existing) {
+    // Reagrupa com a mensagem anterior e reinicia o timer
+    clearTimeout(existing.timer);
+    existing.parts.push(incomingText);
+    existing.timer = setTimeout(() => processBuffer(phone), DEBOUNCE_MS);
+    console.log(`[zapiHandler] Buffer ${phone}: ${existing.parts.length} partes acumuladas`);
+  } else {
+    // Inicia novo buffer para este número
+    const timer = setTimeout(() => processBuffer(phone), DEBOUNCE_MS);
+    buffers.set(phone, { parts: [incomingText], senderName: payload.senderName, timer });
   }
 }
