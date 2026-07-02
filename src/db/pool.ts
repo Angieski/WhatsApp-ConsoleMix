@@ -18,15 +18,17 @@ export interface DbPool {
 function createPgPool(): DbPool {
   if (!DB_URL) throw new Error("DATABASE_URL não definida");
 
+  const needsSsl =
+    process.env.NODE_ENV === "production" ||
+    DB_URL.includes(".railway.app") ||
+    DB_URL.includes(".rlwy.net");
+
   const pgPool = new Pool({
     connectionString: DB_URL,
-    ssl:
-      process.env.NODE_ENV === "production"
-        ? { rejectUnauthorized: false }
-        : false,
+    ssl: needsSsl ? { rejectUnauthorized: false } : false,
     max: 10,
     idleTimeoutMillis: 30_000,
-    connectionTimeoutMillis: 5_000,
+    connectionTimeoutMillis: 10_000,
   });
 
   return {
