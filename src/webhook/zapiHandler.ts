@@ -46,8 +46,13 @@ async function processBuffer(phone: string): Promise<void> {
     ]);
 
     const reply = await generateReply(history, ragContext, phone);
-    await appendToHistory(phone, "assistant", reply);
 
+    if (!reply.trim()) {
+      console.warn(`[zapiHandler] generateReply retornou vazio para ${phone} — nada enviado`);
+      return;
+    }
+
+    await appendToHistory(phone, "assistant", reply);
     await sendText(phone, reply);
   } catch (err) {
     console.error(`[zapiHandler] Erro ao processar mensagem de ${phone}:`, err);

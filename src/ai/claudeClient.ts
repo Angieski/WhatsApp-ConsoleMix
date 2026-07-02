@@ -45,13 +45,14 @@ export async function generateReply(
       tools: SALES_TOOLS,
     });
 
-    // Sem tool use: retorna o texto final
-    if (
-      response.stop_reason === "end_turn" ||
-      !response.content.some((b) => b.type === "tool_use")
-    ) {
+    // Sem tool use pendente: tenta retornar o texto final
+    const hasToolUse = response.content.some((b) => b.type === "tool_use");
+    if (!hasToolUse) {
       const textBlock = response.content.find((b) => b.type === "text");
-      return textBlock?.type === "text" ? textBlock.text : "";
+      const text = textBlock?.type === "text" ? textBlock.text.trim() : "";
+      // Se há texto, retorna. Se não há (ex: só chamou ferramenta e parou), continua o loop
+      if (text) return text;
+      if (response.stop_reason === "end_turn") continue;
     }
 
     // Adiciona a resposta do assistente (com blocos tool_use) ao histórico de trabalho

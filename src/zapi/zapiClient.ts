@@ -73,7 +73,11 @@ function delay(ms: number): Promise<void> {
 export async function sendText(phone: string, message: string): Promise<SendTextResponse> {
   const { instanceId, token, clientToken } = await getSettings();
   const formatted = formatForWhatsApp(message);
-  const parts = splitIntoParts(formatted);
+  const parts = splitIntoParts(formatted).filter((p) => p.trim().length > 0);
+
+  if (parts.length === 0) {
+    throw new Error("sendText: mensagem resultou em conteúdo vazio após formatação");
+  }
 
   let last!: SendTextResponse;
   for (let i = 0; i < parts.length; i++) {
