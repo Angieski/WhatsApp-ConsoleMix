@@ -1,8 +1,19 @@
 import type { Tool } from "@anthropic-ai/sdk/resources/messages";
 import { createOrder } from "./orderService";
 import { formatCatalog } from "./catalog";
+import { updateConversation } from "../services/conversationService";
 
 export const SALES_TOOLS: Tool[] = [
+  {
+    name: "mark_resolved",
+    description:
+      "Marca a conversa de suporte como concluída. Use quando o problema do cliente foi resolvido e ele confirmou que está satisfeito.",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
   {
     name: "register_order",
     description:
@@ -55,6 +66,11 @@ export async function executeTool(
   phone: string
 ): Promise<string> {
   switch (toolName) {
+    case "mark_resolved": {
+      await updateConversation(phone, { status: "concluido" });
+      return JSON.stringify({ success: true, message: "Conversa marcada como concluída." });
+    }
+
     case "register_order": {
       const args = input as unknown as RegisterOrderInput;
       const order = await createOrder({

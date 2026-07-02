@@ -35,6 +35,14 @@ router.get("/:phone/messages", async (req: Request, res: Response): Promise<void
   res.json(rows);
 });
 
+// DELETE /api/conversations/:phone/messages — apaga histórico para testes
+router.delete("/:phone/messages", async (req: Request, res: Response): Promise<void> => {
+  const phone = String(req.params.phone);
+  await pool.query("DELETE FROM messages WHERE phone = $1", [phone]);
+  await pool.query("DELETE FROM conversations WHERE phone = $1", [phone]);
+  res.json({ success: true });
+});
+
 // PATCH /api/conversations/:phone
 router.patch("/:phone", async (req: Request, res: Response): Promise<void> => {
   const phone = String(req.params.phone);

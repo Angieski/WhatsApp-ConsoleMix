@@ -104,6 +104,8 @@ body {
 .btn-secondary:hover { background: var(--border); }
 
 .btn-toggle { font-size: 12px; font-weight: 600; }
+.btn-reset { font-size: 12px; background: transparent; color: var(--text-muted); border-color: var(--border); }
+.btn-reset:hover { background: var(--red); color: #fff; border-color: var(--red); }
 .btn-danger-outline { background: transparent; color: var(--red); border-color: var(--red); }
 .btn-danger-outline:hover { background: var(--red); color: #fff; }
 .btn-success-outline { background: transparent; color: var(--green); border-color: var(--green); }

@@ -157,7 +157,16 @@ function renderMessage(msg) {
 
 async function patchConversation(phone, data) {
   await apiFetch(`/conversations/${encodeURIComponent(phone)}`, "PATCH", data);
-  await loadConversations(); // atualiza lista com novo tag/status
+  await loadConversations();
+}
+
+async function resetConversation(phone) {
+  if (!confirm(`Apagar todo o histórico de ${formatPhone(phone)}?\nO bot esquecerá esta conversa completamente.`)) return;
+  await apiFetch(`/conversations/${encodeURIComponent(phone)}/messages`, "DELETE");
+  activePhone = null;
+  document.getElementById("thread").classList.add("hidden");
+  document.getElementById("empty-state").classList.remove("hidden");
+  await loadConversations();
 }
 
 // ── Settings modal ────────────────────────────────────────────────────────
@@ -236,6 +245,11 @@ function bindEvents() {
   document.getElementById("status-select").addEventListener("change", async (e) => {
     if (!activePhone) return;
     await patchConversation(activePhone, { status: e.target.value });
+  });
+
+  document.getElementById("btn-reset-conv").addEventListener("click", () => {
+    if (!activePhone) return;
+    resetConversation(activePhone);
   });
 }
 
