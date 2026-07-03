@@ -70,6 +70,33 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const SEND_RETRIES    = 3;
+const SEND_RETRY_BASE = 2000; // 2 s, 4 s
+
+async function sendSingleTextWithRetry(
+  phone: string,
+  message: string,
+  instanceId: string,
+  token: string,
+  clientToken: string
+): Promise<SendTextResponse> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < SEND_RETRIES; attempt++) {
+    try {
+      return await sendSingleText(phone, message, instanceId, token, clientToken);
+    } catch (err) {
+      lastErr = err;
+      // Não retenta erros 4xx (credenciais inválidas, número inexistente, etc.)
+      if (err instanceof Error && /\[4\d\d\]/.test(err.message)) throw err;
+      if (attempt < SEND_RETRIES - 1) {
+        console.warn(`[zapiClient] Tentativa ${attempt + 1} falhou — retentando em ${SEND_RETRY_BASE * (attempt + 1)}ms`);
+        await delay(SEND_RETRY_BASE * (attempt + 1));
+      }
+    }
+  }
+  throw lastErr;
+}
+
 export async function sendText(phone: string, message: string): Promise<SendTextResponse> {
   const { instanceId, token, clientToken } = await getSettings();
   const formatted = formatForWhatsApp(message);
@@ -82,7 +109,7 @@ export async function sendText(phone: string, message: string): Promise<SendText
   let last!: SendTextResponse;
   for (let i = 0; i < parts.length; i++) {
     if (i > 0) await delay(DELAY_BETWEEN_PARTS_MS);
-    last = await sendSingleText(phone, parts[i], instanceId, token, clientToken);
+    last = await sendSingleTextWithRetry(phone, parts[i], instanceId, token, clientToken);
   }
   return last;
 }

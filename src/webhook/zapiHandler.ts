@@ -61,8 +61,9 @@ async function processBuffer(phone: string): Promise<void> {
       return;
     }
 
-    await appendToHistory(phone, "assistant", reply);
+    // Envia primeiro — só persiste no histórico após entrega confirmada
     await sendText(phone, reply);
+    await appendToHistory(phone, "assistant", reply);
   } catch (err) {
     console.error(`[zapiHandler] Erro ao processar mensagem de ${phone}:`, err);
 
@@ -81,41 +82,45 @@ export async function handleIncoming(req: Request, res: Response): Promise<void>
 
   res.sendStatus(200);
 
-  const settings = await getSettings();
-  if (!settings.enabled) return;
+  try {
+    const settings = await getSettings();
+    if (!settings.enabled) return;
 
-  if (
-    payload.type !== "ReceivedCallback" ||
-    payload.fromMe ||
-    payload.isGroup ||
-    !payload.text?.message
-  ) {
-    return;
-  }
+    if (
+      payload.type !== "ReceivedCallback" ||
+      payload.fromMe ||
+      payload.isGroup ||
+      !payload.text?.message
+    ) {
+      return;
+    }
 
-  if (processedIds.has(payload.messageId)) return;
-  processedIds.add(payload.messageId);
-  if (processedIds.size > 500) {
-    const [first] = processedIds;
-    processedIds.delete(first);
-  }
+    if (processedIds.has(payload.messageId)) return;
+    processedIds.add(payload.messageId);
+    if (processedIds.size > 500) {
+      const [first] = processedIds;
+      processedIds.delete(first);
+    }
 
-  const phone = payload.phone;
-  const incomingText = payload.text.message.trim();
+    const phone = payload.phone;
+    const incomingText = payload.text.message.trim();
 
-  // Registra/atualiza a conversa no dashboard imediatamente
-  await upsertConversation(phone, payload.senderName);
+    // Registra/atualiza a conversa no dashboard imediatamente
+    await upsertConversation(phone, payload.senderName);
 
-  const existing = buffers.get(phone);
-  if (existing) {
-    // Reagrupa com a mensagem anterior e reinicia o timer
-    clearTimeout(existing.timer);
-    existing.parts.push(incomingText);
-    existing.timer = setTimeout(() => processBuffer(phone), DEBOUNCE_MS);
-    console.log(`[zapiHandler] Buffer ${phone}: ${existing.parts.length} partes acumuladas`);
-  } else {
-    // Inicia novo buffer para este número
-    const timer = setTimeout(() => processBuffer(phone), DEBOUNCE_MS);
-    buffers.set(phone, { parts: [incomingText], senderName: payload.senderName, timer });
+    const existing = buffers.get(phone);
+    if (existing) {
+      // Reagrupa com a mensagem anterior e reinicia o timer
+      clearTimeout(existing.timer);
+      existing.parts.push(incomingText);
+      existing.timer = setTimeout(() => processBuffer(phone), DEBOUNCE_MS);
+      console.log(`[zapiHandler] Buffer ${phone}: ${existing.parts.length} partes acumuladas`);
+    } else {
+      // Inicia novo buffer para este número
+      const timer = setTimeout(() => processBuffer(phone), DEBOUNCE_MS);
+      buffers.set(phone, { parts: [incomingText], senderName: payload.senderName, timer });
+    }
+  } catch (err) {
+    console.error("[zapiHandler] Erro ao registrar mensagem de", payload.phone, ":", err);
   }
 }
