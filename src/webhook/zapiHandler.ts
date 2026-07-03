@@ -44,10 +44,7 @@ async function processBuffer(phone: string): Promise<void> {
 
   processing.add(phone);
 
-  const combinedText =
-    buf.parts.length === 1
-      ? buf.parts[0]
-      : buf.parts.map((p, i) => `[msg ${i + 1}/${buf.parts.length}] ${p}`).join("\n");
+  const combinedText = buf.parts.join("\n\n");
 
   try {
     await appendToHistory(phone, "user", combinedText);
