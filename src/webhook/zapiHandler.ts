@@ -45,9 +45,13 @@ async function processBuffer(phone: string): Promise<void> {
   processing.add(phone);
 
   const combinedText = buf.parts.join("\n\n");
-  // Para o RAG, usa só a última parte — evita que mensagens curtas como "pode me ajudar?"
-  // diluam o embedding e prejudiquem a recuperação do chunk relevante
-  const ragQuery = buf.parts[buf.parts.length - 1];
+  // Para o RAG, descarta partes genéricas curtas ("oi", "pode me ajudar?") que
+  // diluem o embedding sem agregar contexto — mas preserva todas as perguntas
+  // substantivas para cobrir o caso de múltiplas perguntas no mesmo buffer
+  const substantiveParts = buf.parts.filter((p) => p.length > 20);
+  const ragQuery = substantiveParts.length > 0
+    ? substantiveParts.join("\n\n")
+    : buf.parts[buf.parts.length - 1];
 
   try {
     await appendToHistory(phone, "user", combinedText);
