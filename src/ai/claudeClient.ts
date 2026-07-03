@@ -37,12 +37,14 @@ export async function generateReply(
   const workingMessages: MessageParam[] = [...history];
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+    const isLastRound = round === MAX_TOOL_ROUNDS - 1;
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
       system: systemBlocks,
       messages: workingMessages,
-      tools: SALES_TOOLS,
+      // Na última rodada, omite tools para forçar resposta em texto puro
+      ...(isLastRound ? {} : { tools: SALES_TOOLS }),
     });
 
     // Sem tool use pendente: retorna o texto final

@@ -45,13 +45,16 @@ async function processBuffer(phone: string): Promise<void> {
   processing.add(phone);
 
   const combinedText = buf.parts.join("\n\n");
+  // Para o RAG, usa só a última parte — evita que mensagens curtas como "pode me ajudar?"
+  // diluam o embedding e prejudiquem a recuperação do chunk relevante
+  const ragQuery = buf.parts[buf.parts.length - 1];
 
   try {
     await appendToHistory(phone, "user", combinedText);
 
     const [history, ragContext] = await Promise.all([
       getHistory(phone),
-      retrieveContext(combinedText),
+      retrieveContext(ragQuery),
     ]);
 
     const reply = await generateReply(history, ragContext, phone);
