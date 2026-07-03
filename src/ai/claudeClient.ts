@@ -10,7 +10,7 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const MODEL = "claude-sonnet-4-6";
 const MAX_TOKENS = 1024;
-const MAX_TOOL_ROUNDS = 5; // evita loops infinitos
+const MAX_TOOL_ROUNDS = 5;
 
 export async function generateReply(
   history: MessageParam[],
@@ -37,34 +37,34 @@ export async function generateReply(
   const workingMessages: MessageParam[] = [...history];
 
   for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
-    const isLastRound = round === MAX_TOOL_ROUNDS - 1;
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
       system: systemBlocks,
       messages: workingMessages,
-      // Na última rodada, omite tools para forçar resposta em texto puro
-      ...(isLastRound ? {} : { tools: SALES_TOOLS }),
+      tools: SALES_TOOLS,
     });
 
-    // Sem tool use pendente: retorna o texto final
+    console.log(
+      `[claudeClient] round=${round} stop_reason=${response.stop_reason} ` +
+      `blocks=${response.content.map((b) => b.type).join(",")}`
+    );
+
     const hasToolUse = response.content.some((b) => b.type === "tool_use");
     if (!hasToolUse) {
       const textBlock = response.content.find((b) => b.type === "text");
       const text = textBlock?.type === "text" ? textBlock.text.trim() : "";
       if (text) return text;
-      // Resposta vazia sem ferramentas (edge case raro): retenta sem modificar o histórico
-      console.warn(`[claudeClient] Resposta sem texto nem ferramentas no round ${round} — retentando`);
+      console.warn(`[claudeClient] Resposta vazia no round ${round} — retentando`);
       continue;
     }
 
-    // Adiciona a resposta do assistente (com blocos tool_use) ao histórico de trabalho
     workingMessages.push({ role: "assistant", content: response.content });
 
-    // Executa cada ferramenta solicitada
     const toolResults: ToolResultBlockParam[] = [];
     for (const block of response.content) {
       if (block.type === "tool_use") {
+        console.log(`[claudeClient] Executando ferramenta: ${block.name}`);
         const result = await executeTool(
           block.name,
           block.input as Record<string, string>,
@@ -80,6 +80,20 @@ export async function generateReply(
 
     workingMessages.push({ role: "user", content: toolResults });
   }
+
+  // Loop esgotado — faz uma chamada final com o histórico original (sem tool exchange)
+  // e sem ferramentas, forçando resposta em texto puro
+  console.warn(`[claudeClient] Loop de ferramentas esgotado — tentativa final sem tools`);
+  const finalResponse = await client.messages.create({
+    model: MODEL,
+    max_tokens: MAX_TOKENS,
+    system: systemBlocks,
+    messages: history,
+  });
+
+  const finalText = finalResponse.content.find((b) => b.type === "text");
+  const text = finalText?.type === "text" ? finalText.text.trim() : "";
+  if (text) return text;
 
   return "Desculpe, não consegui processar sua solicitação. Por favor, tente novamente.";
 }
